@@ -32,7 +32,7 @@ We are constantly striving to improve this project & make it the best. If you ex
 ---
 ## Configuration (pre-installing)
 
-1. Copy your `rclone.conf` file to `/sdcard/.rclone/rclone.conf` (not required)
+1. Copy your `rclone.conf` file to `/sdcard/.rclone/rclone.conf` or set `$XDG_CONFIG_HOME` in you shell config(not required)
 
 2. Add custom params at `/sdcard/.rclone/.*.param` (if needed)
 
@@ -136,6 +136,13 @@ Specification of global rclone parameters can be created in
         FTP=1
 
         FTP_ADDR=127.0.0.1:38763
+
+        CACHEMAXSIZE=1G
+
+        CACHE=${USER_CONFDIR}/.cache
+
+        CACHE_BACKEND=${USER_CONFDIR}/.cache-backend
+
 
 - Excluded Parameters
 

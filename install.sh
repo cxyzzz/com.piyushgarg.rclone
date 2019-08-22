@@ -190,14 +190,14 @@ set_permissions() {
   ui_print "+ please wait..."
   ui_print ""
   
-    if [[ -e /sdcard/.rclone/rclone.conf ]]; then
+    if [[ -e /sdcard/.rclone/rclone.conf ]] || [[-e ${XDG_CONFIG_HOME}/rclone/rclone.conf ]]; then
       
         export INTERACTIVE=1
         $MODPATH/rclone-wrapper.sh remount
         
     else 
     
-        echo "'/sdcard/.rclone/rclone.conf' not found"
+        echo "rclone.conf not found"
         echo
         echo "Additional setup required..."
         echo "Please run rclone config in su terminal"
