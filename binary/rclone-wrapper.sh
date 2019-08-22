@@ -1,11 +1,16 @@
-#!/system/bin/sh
+#!/system/bin/env bash
 
 MODDIR=${0%/*}
 UPDDIR=/data/adb/modules_update
 IMGDIR=/sbin/.core/img
 id=com.piyushgarg.rclone
 
-USER_CONFDIR=/sdcard/.rclone
+if [ -n "$XDG_CONFIG_HOME" ]; then
+    USER_CONFDIR=$XDG_CONFIG_HOME/.rclone
+else
+    USER_CONFDIR=/sdcard/.rclone
+fi
+
 USER_CONF=${USER_CONFDIR}/rclone.conf
 CONFIGFILE=${HOME}/.config/rclone/rclone.conf
 LOGFILE=${USER_CONFDIR}/rclone.log
@@ -91,7 +96,7 @@ config () {
     
     fi
      
-    ${HOME}/rclone config && cp ${HOME}/.config/rclone/rclone.conf ${USER_CONFDIR}/rclone.conf && echo && ${HOME}/rclone-wrapper.sh remount
+    ${HOME}/rclone config && echo && ${HOME}/rclone-wrapper.sh remount
 
 }
 
