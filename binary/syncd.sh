@@ -1,4 +1,20 @@
-#!/system/bin/sh
+#!/system/bin/env bash
+
+### rclone environment
+export LANG=en_US.UTF-8
+export RCLONE_LOG_LEVEL=INFO
+export RCLONE_LOG_FILE=/storage/emulated/0/rclone.log
+export RCLONE_NO_UPDATE_MODTIME=true
+export RCLONE_TRACK_RENAMES=true
+
+# old file dated dir
+#export RCLONE_BACKUP_DIR="love:/archive/$(date +%Y)/$(date +%F_%R)"
+
+# old file dataed file name
+export RCLONE_BACKUP_DIR="love:/old_files"
+export RCLONE_SUFFIX="_$(date +%F_%R)"
+export RCLONE_SUFFIX_KEEP_EXTENSION=true
+
 
 MODDIR=${0%/*}
 TMPDIR=${MODDIR}/.tmp
@@ -79,7 +95,7 @@ done
 
 echo "Syncing..."
 
-nice -n 19 ionice -c 2 -n 7 ${HOME}/rclone copy "/storage/emulated/${PROFILE}/${SYNCDIR}" "$CLOUDROOTMOUNTPOINT/${remote}/${SYNCDIR}" --retries-sleep=10m --retries 6 --transfers 1 --multi-thread-streams 1 >> /dev/null 2>&1
+nice -n 19 ionice -c 2 -n 7 ${HOME}/rclone sync "/storage/emulated/${PROFILE}/${SYNCDIR}" "$CLOUDROOTMOUNTPOINT/${remote}/${SYNCDIR}" --retries-sleep=10m --retries 6 --transfers 1 --multi-thread-streams 1 >> /dev/null 2>&1
 
 if [[ -e ${SYNC_PENDING} ]]; then
 
