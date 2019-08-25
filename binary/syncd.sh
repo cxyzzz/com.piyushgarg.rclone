@@ -18,7 +18,7 @@ export RCLONE_SUFFIX_KEEP_EXTENSION=true
 
 MODDIR=${0%/*}
 TMPDIR=${MODDIR}/.tmp
-SYNC_PENDING=${TMPDIR}/${remote}.syncd-pend
+SYNC_PENDING=${TMPDIR}/${remote}.sync.pend
 
 dump_battery () {
 
@@ -50,11 +50,9 @@ while true; do
 
     if [[ ! -e ${SYNC_PENDING} ]]; then
 
-        ${HOME}/inotifywait "/storage/emulated/${PROFILE}/${SYNCDIR}" -e modify,create,moved_to,close_write -q >> /dev/null 2>&1
+        ${HOME}/inotifywait "/storage/emulated/${PROFILE}/${SYNCDIR}" -e modify,create,moved_to,close_write -q >> /dev/null 2>&1 && touch ${SYNC_PENDING}
 
     fi
-
-    touch ${SYNC_PENDING}
 
     while true; do
 
@@ -72,8 +70,24 @@ while true; do
             continue
 
         fi
+        
+        if [[ $SYNC_CHARGE = 1 ]]; then
 
-        if [[ ${SYNCWIFI} = 1 ]]; then
+            if [[ $(ac_charge) = true ]] || [[ $(usb_charge) = true ]]; then
+
+                echo "Sync charge check success"
+
+            else
+
+                echo "Sync charge check fail"
+                sleep 300
+                continue
+
+            fi
+
+        fi
+
+        if [[ ${SYNC_WIFI} = 1 ]]; then
 
             if ! ping -I wlan0 -c 1 ${NETCHK_ADDR} >> /dev/null 2>&1; then
 
