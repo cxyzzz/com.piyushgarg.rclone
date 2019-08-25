@@ -30,6 +30,12 @@ We are constantly striving to improve this project & make it the best. If you ex
 - Support for Work Profiles 
 
 ---
+## Requirement
+
+- bash : if not have bash, you should edit all script，change the `#!/system/bin/env bash` to `#!/system/bin/sh`
+- a terminal : used to test your config (if need)
+
+---
 ## Configuration (pre-installing)
 
 1. Copy your `rclone.conf` file to `/sdcard/.rclone/rclone.conf` or set `$XDG_CONFIG_HOME` in you shell config(not required)
