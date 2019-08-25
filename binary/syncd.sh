@@ -15,6 +15,7 @@ export RCLONE_BACKUP_DIR="love:/old_files"
 export RCLONE_SUFFIX="_$(date +%F_%R)"
 export RCLONE_SUFFIX_KEEP_EXTENSION=true
 
+LD_LIBRARY_PATH=${HOME}
 
 MODDIR=${0%/*}
 TMPDIR=${MODDIR}/.tmp

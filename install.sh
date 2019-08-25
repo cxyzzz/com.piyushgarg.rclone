@@ -159,6 +159,8 @@ on_install() {
   unzip -p "$ZIPFILE" binary/fusermount-${ARCH} > $MODPATH/fusermount
   ui_print "+ Extracting lib-${ARCH}/libandroid-support.so to $MODPATH/libandroid-support.so"
   unzip -p "$ZIPFILE" lib-${ARCH}/libandroid-support.so > $MODPATH/libandroid-support.so
+  ui_print "+ Extracting lib-${ARCH}/libinotifytools.so to $MODPATH/libinotifytools.so"
+  unzip -p "$ZIPFILE" lib-${ARCH}/libinotifytools.so > $MODPATH/libinotifytools.so
   ui_print "+ Extracting rclone-wrapper.sh script to $MODPATH/rclone-wrapper.sh"
   unzip -p "$ZIPFILE" binary/rclone-wrapper.sh > $MODPATH/rclone-wrapper.sh
   ui_print "+ Extracting fusermount-wrapper.sh script to $MODPATH/fusermount-wrapper.sh"
