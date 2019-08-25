@@ -96,7 +96,7 @@ config () {
     
     fi
      
-    ${HOME}/rclone config && echo && ${HOME}/rclone-wrapper.sh remount
+    ${HOME}/rclone config
 
 }
 

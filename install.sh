@@ -167,7 +167,7 @@ on_install() {
   unzip -p "$ZIPFILE" binary/fusermount-wrapper.sh > $MODPATH/fusermount-wrapper.sh
   ui_print "+ Extracting syncd.sh script to $MODPATH/syncd.sh"
   unzip -p "$ZIPFILE" binary/syncd.sh > $MODPATH/syncd.sh
-ui_print "+ Extracting inotifywait-${ARCH} to $MODPATH/inotifywait"
+  ui_print "+ Extracting inotifywait-${ARCH} to $MODPATH/inotifywait"
   unzip -p "$ZIPFILE" binary/inotifywait-${ARCH} > $MODPATH/inotifywait
 }
 
