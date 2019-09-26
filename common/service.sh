@@ -84,10 +84,13 @@ SYNC_WIFI=1
 SYNC_CHARGE=0
 SYNC_BATTLVL=0
 HTTP=0
+HTTPDIR=-1
 HTTP_ADDR=127.0.0.1:38762
 FTP=0
+FTPDIR=-1
 FTP_ADDR=127.0.0.1:38763
 SFTP=0
+SFTPDIR=-1
 SFTP_ADDR=127.0.0.1:38722
 SFTP_USER=
 SFTP_PASS=
@@ -109,11 +112,11 @@ custom_params () {
 
     if [[ ${remote} = global ]]; then
 
-        PARAMS="DISABLE LOGFILE LOGLEVEL CACHEMODE CACHEMAXSIZE CACHE CACHE_BACKEND CHUNKSIZE CHUNKTOTAL CACHEWORKERS CACHEINFOAGE DIRCACHETIME ATTRTIMEOUT BUFFERSIZE READAHEAD M_UID M_GID DIRPERMS FILEPERMS READONLY BINDSD ADD_PARAMS REPLACE_PARAMS NETCHK NETCHK_IF NETCHK_ADDR HTTP FTP HTTP_ADDR FTP_ADDR SFTP SFTP_ADDR SFTP_USER SFTP_PASS PROFILE ISOLATE"
+        PARAMS="DISABLE LOGFILE LOGLEVEL CACHEMODE CACHEMAXSIZE CACHE CACHE_BACKEND CHUNKSIZE CHUNKTOTAL CACHEWORKERS CACHEINFOAGE DIRCACHETIME ATTRTIMEOUT BUFFERSIZE READAHEAD M_UID M_GID DIRPERMS FILEPERMS READONLY BINDSD ADD_PARAMS REPLACE_PARAMS NETCHK NETCHK_IF NETCHK_ADDR HTTP FTP HTTPDIR FTPDIR SFTPDIR HTTP_ADDR FTP_ADDR SFTP SFTP_ADDR SFTP_USER SFTP_PASS PROFILE ISOLATE"
 
     else
 
-        PARAMS="DISABLE LOGFILE LOGLEVEL CACHEMODE CHUNKSIZE CHUNKTOTAL CACHEWORKERS CACHEINFOAGE DIRCACHETIME ATTRTIMEOUT BUFFERSIZE READAHEAD M_UID M_GID DIRPERMS FILEPERMS READONLY BINDSD SDBINDPOINT ADD_PARAMS REPLACE_PARAMS PROFILE ISOLATE SDSYNCDIRS SYNC_WIFI SYNC_BATTLVL SYNC_CHARGE"
+        PARAMS="DISABLE LOGFILE LOGLEVEL CACHEMODE CHUNKSIZE CHUNKTOTAL CACHEWORKERS CACHEINFOAGE DIRCACHETIME ATTRTIMEOUT BUFFERSIZE READAHEAD M_UID M_GID DIRPERMS FILEPERMS READONLY BINDSD SDBINDPOINT ADD_PARAMS REPLACE_PARAMS HTTP FTP HTTPDIR FTPDIR HTTP_ADDR FTP_ADDR SFTP SFTPDIR SFTP_ADDR SFTP_USER SFTP_PASS PROFILE ISOLATE SDSYNCDIRS SYNC_WIFI SYNC_BATTLVL SYNC_CHARGE"
     fi
 
     BAD_SYNTAX="(^\s*#|^\s*$|^\s*[a-z_][^[:space:]]*=[^;&\(\`]*$)"
@@ -416,6 +419,79 @@ su -M -p -c nice -n 19 ionice -c 2 -n 7 ${HOME}/rclone mount ${remote}: ${CLOUDR
 
 }
 
+local_share () {
+
+if [[ ${HTTP} = 1 ]]; then
+    if [[ ! -z ${HTTPDIR} ]] && [[ ${HTTPDIR} != -1 ]]; then
+        if $(/sbin/rclone serve http ${CLOUDROOTMOUNTPOINT}/${remote}/${HTTPDIR} --addr ${HTTP_ADDR} --no-checksum --no-modtime --read-only >> /dev/null 2>&1 &); then
+
+            echo "Notice: remote ${CLOUDROOTMOUNTPOINT}/${remote}/${HTTPDIR} served via HTTP at: http://${HTTP_ADDR}"
+
+        fi
+    elif [[ ${HTTPDIR} = -1 ]]; then
+        if $(/sbin/rclone serve http ${CLOUDROOTMOUNTPOINT} --addr ${HTTP_ADDR} --no-checksum --no-modtime --read-only >> /dev/null 2>&1 &); then
+       
+             echo "Notice: ${CLOUDROOTMOUNTPOINT} served via HTTP at: http://${HTTP_ADDR}"
+             
+        fi
+    else 
+        if $(/sbin/rclone serve http ${CLOUDROOTMOUNTPOINT}/${remote} --addr ${HTTP_ADDR} --no-checksum --no-modtime --read-only >> /dev/null 2>&1 &); then
+           
+            echo "Notice: ${CLOUDROOTMOUNTPOINT}/${remote} served via HTTP at: http://${HTTP_ADDR}"
+            
+        fi
+    fi
+fi
+
+if [[ ${FTP} = 1 ]]; then
+
+    if [[ ! -z ${FTPDIR} ]] && [[ ${FTPDIR} != -1 ]]; then
+        if $(/sbin/rclone serve ftp ${CLOUDROOTMOUNTPOINT}/${remote}/${FTPDIR} --addr ${FTP_ADDR} --no-checksum --no-modtime --read-only >> /dev/null 2>&1 &); then
+
+            echo "Notice: remote ${CLOUDROOTMOUNTPOINT}/${remote}/${FTPDIR} served via FTP at: http://${FTP_ADDR}"
+
+        fi
+    elif [[ ${FTPDIR} = -1 ]]; then
+        if $(/sbin/rclone serve ftp ${CLOUDROOTMOUNTPOINT} --addr ${FTP_ADDR} --no-checksum --no-modtime --read-only >> /dev/null 2>&1 &); then
+       
+             echo "Notice: ${CLOUDROOTMOUNTPOINT} via FTP at: http://${FTP_ADDR}"
+             
+        fi
+    else 
+        if $(/sbin/rclone serve ftp ${CLOUDROOTMOUNTPOINT}/${remote} --addr ${FTP_ADDR} --no-checksum --no-modtime --read-only >> /dev/null 2>&1 &); then
+           
+            echo "Notice: ${CLOUDROOTMOUNTPOINT}/${remote} served via FTP at: http://${FTP_ADDR}"
+            
+        fi
+    fi
+fi
+
+if [[ ${SFTP} = 1 ]] && [[ ! -z ${SFTP_USER} ]] && [[ ! -z ${SFTP_PASS} ]]; then
+
+    if [[ ! -z ${SFTPDIR} ]] && [[ ${SFTPDIR} != -1 ]]; then
+        if $(/sbin/rclone serve sftp ${CLOUDROOTMOUNTPOINT} --addr ${SFTP_ADDR} --user ${SFTP_USER} --pass ${SFTP_PASS} --no-checksum --no-modtime --read-only >> /dev/null 2>&1 &); then
+
+            echo "Notice: remote ${CLOUDROOTMOUNTPOINT}/${remote}/${SFTPDIR} served via SFTP at: http://${SFTP_ADDR}"
+
+        fi
+    elif [[ ${SFTPDIR} = -1 ]]; then
+        if $(/sbin/rclone serve sftp ${CLOUDROOTMOUNTPOINT} --addr ${SFTP_ADDR} --user ${SFTP_USER} --pass ${SFTP_PASS} --no-checksum --no-modtime --read-only >> /dev/null 2>&1 &); then
+       
+             echo "Notice: ${CLOUDROOTMOUNTPOINT} via SFTP at: http://${SFTP_ADDR}"
+             
+        fi
+    else 
+        if $(/sbin/rclone serve sftp ${CLOUDROOTMOUNTPOINT} --addr ${SFTP_ADDR} --user ${SFTP_USER} --pass ${SFTP_PASS} --no-checksum --no-modtime --read-only >> /dev/null 2>&1 &); then
+           
+            echo "Notice: ${CLOUDROOTMOUNTPOINT}/${remote} served via SFTP at: http://${SFTP_ADDR}"
+            
+        fi
+    fi
+fi
+
+}
+
+
 COUNT=0
 
 if [[ ${INTERACTIVE} = 0 ]]; then
@@ -576,41 +652,13 @@ LD_LIBRARY_PATH=${HOME} ${HOME}/rclone listremotes --config ${CONFIGFILE}|cut -f
         rclone_mount
         sd_binder
         syncd_service
+        local_share
         reset_params
 
     done
 
 echo
 
-if [[ ${HTTP} = 1 ]]; then
-
-    if $(/sbin/rclone serve http ${CLOUDROOTMOUNTPOINT} --addr ${HTTP_ADDR} --no-checksum --no-modtime --read-only >> /dev/null 2>&1 &); then
-
-        echo "Notice: /mnt/cloud served via HTTP at: http://${HTTP_ADDR}"
-
-    fi
-
-fi
-
-if [[ ${FTP} = 1 ]]; then
-
-    if $(/sbin/rclone serve ftp ${CLOUDROOTMOUNTPOINT} --addr ${FTP_ADDR} --no-checksum --no-modtime --read-only >> /dev/null 2>&1 &); then
-
-        echo "Notice: /mnt/cloud served via FTP at: ftp://${FTP_ADDR}"
-
-    fi
-    
-fi
-
-if [[ ${SFTP} = 1 ]] && [[ ! -z ${SFTP_USER} ]] && [[ ! -z ${SFTP_PASS} ]]; then
-
-    if $(/sbin/rclone serve sftp ${CLOUDROOTMOUNTPOINT} --addr ${SFTP_ADDR} --user ${SFTP_USER} --pass ${SFTP_PASS} --no-checksum --no-modtime --read-only >> /dev/null 2>&1 &); then
-
-        echo "Notice: /mnt/cloud served via SFTP at: sftp://${SFTP_ADDR}"
-
-    fi
-
-fi
 
 echo
 echo "...done"

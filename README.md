@@ -107,8 +107,31 @@ Specification of rclone parameters on a per remote basis can be created inside h
         REPLACE_PARAMS=0
 
         PROFILE=0
+        
+        HTTP=0
+        
+        HTTPDIR=-1
+        
+        HTTP_ADDR=127.0.0.1:38762
+        
+        FTP=0
+        
+        FTPDIR=-1
+        
+        FTP_ADDR=127.0.0.1:38763
+        
+        SFTP=0
 
-   **NOTE:** _The above are defaults for all remotes without `.*.param` files containing opposing values. 
+        SFTPDIR=-1
+
+        SFTP_ADDR=127.0.0.1:38722
+
+        SFTP_USER=
+
+        SFTP_PASS=
+
+
+   **NOTE:** _The above are defaults for all remotes without `.*.param` files containing opposing values,by default, HTTP、FTP、SFTP will use the `${CLOUDROOTMOUNTPOINT}`(/mnt/cloud),if you want use other dir ,you can add HTTPDIR/FTPDIR/SFTPDIR = youdir in your param config file.
 
 - Custom remote params example #1
 
@@ -132,6 +155,7 @@ Specification of global rclone parameters can be created in
       /sdcard/.rclone/.global.param
 
 - Global Specific Parameters
+        DISABLE=0
 
         NETCHK=1
 
@@ -140,10 +164,14 @@ Specification of global rclone parameters can be created in
         NETCHK_IF=
 
         HTTP=1
+        
+        HTTPDIR=-1
 
         HTTP_ADDR=127.0.0.1:38762
 
         FTP=1
+
+        FTPDIR=-1
 
         FTP_ADDR=127.0.0.1:38763
 
