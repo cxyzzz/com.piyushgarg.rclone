@@ -191,8 +191,7 @@ set_permissions() {
   ui_print "+ Attempting to mount your [Remotes]:"
   ui_print "+ please wait..."
   ui_print ""
-  . /system/etc/bash/bashrc
-    if [[ -e /sdcard/.rclone/rclone.conf ]] || [[-e ${XDG_CONFIG_HOME}/rclone/rclone.conf ]]; then
+    if [[ -s "/sdcard/.rclone/rclone.conf" ]] || [[ -s "/sdcard/ADM/.config/rclone/rclone.conf" ]]; then
       
         export INTERACTIVE=1
         $MODPATH/rclone-wrapper.sh remount
