@@ -32,13 +32,13 @@ We are constantly striving to improve this project & make it the best. If you ex
 ---
 ## Requirement
 
-- bash : if not have bash, you should edit all script，change the `#!/system/bin/env bash` to `#!/system/bin/sh`
+- bash : if not have bash, you should edit all scripts change the `#!/system/bin/env bash` to `#!/system/bin/sh`
 - a terminal : used to test your config (if need)
 
 ---
 ## Configuration (pre-installing)
 
-1. Copy your `rclone.conf` file to `/sdcard/.rclone/rclone.conf` or set `$XDG_CONFIG_HOME` in you shell config(not required)
+1. Copy your `rclone.conf` file to `/sdcard/.rclone` or `$XDG_CONFIG_HOME` (not required)
 
 2. Add custom params at `/sdcard/.rclone/.*.param` (if needed)
 
@@ -131,7 +131,7 @@ Specification of rclone parameters on a per remote basis can be created inside h
         SFTP_PASS=
 
 
-   **NOTE:** _The above are defaults for all remotes without `.*.param` files containing opposing values,by default, HTTP、FTP、SFTP will use the `${CLOUDROOTMOUNTPOINT}`(/mnt/cloud),if you want use other dir ,you can add HTTPDIR/FTPDIR/SFTPDIR = youdir in your param config file.
+   **NOTE:** _The above are defaults for all remotes without `.*.param` files containing opposing values,by default, HTTP?FTP?SFTP will use the `${CLOUDROOTMOUNTPOINT}`(/mnt/cloud),if you want use other dir ,you can add HTTPDIR/FTPDIR/SFTPDIR = youdir in your param config file.
 
 - Custom remote params example #1
 
@@ -155,7 +155,6 @@ Specification of global rclone parameters can be created in
       /sdcard/.rclone/.global.param
 
 - Global Specific Parameters
-        DISABLE=0
 
         NETCHK=1
 
@@ -293,6 +292,13 @@ Neither the author nor developer's will be held responsible for any damage/data 
 
 ---
 ## Changelog
+
+## v1.10
+* fixed fusermount wrapper
+
+## v1.9
+* Add arm/arm64 1.51 bins downloaded from https://beta.rclone.org/
+* Commented fusermount wrapper
 
 ### v1.8
 * Support for Work Profiles `PROFILE=`

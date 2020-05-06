@@ -15,34 +15,30 @@ id=com.piyushgarg.rclone
 
 if [ -e ${UPDDIR}/${id}/rclone-wrapper.sh ]; then
 
-    ln -sf ${UPDDIR}/${id}/rclone-wrapper.sh /sbin/rclone
-    ln -sf ${UPDDIR}/${id}/fusermount-wrapper.sh /sbin/fusermount
     HOME=${UPDDIR}/${id}
 
 elif [ -e ${IMGDIR}/${id}/rclone-wrapper.sh ]; then
 
-    ln -sf ${IMGDIR}/${id}/rclone-wrapper.sh /sbin/rclone
-    ln -sf ${IMGDIR}/${id}/fusermount-wrapper.sh /sbin/fusermount
     HOME=${IMGDIR}/${id}
 
 else
 
-    ln -sf ${MODDIR}/rclone-wrapper.sh /sbin/rclone
-    ln -sf ${MODDIR}/fusermount-wrapper.sh /sbin/fusermount
     HOME=${MODDIR}
 
 fi
 
+ln -sf ${HOME}/rclone-wrapper.sh /sbin/rclone
+ln -sf ${HOME}/fusermount /sbin/fusermount
+
+
 #MODULE VARS
 SYSBIN=/system/bin
 CLOUDROOTMOUNTPOINT=/mnt/cloud
-
 if [ ${XDG_CONFIG_HOME} ]; then
     USER_CONFDIR=${XDG_CONFIG_HOME}/rclone
 else
     USER_CONFDIR=/sdcard/.rclone
 fi
-
 USER_CONF=${USER_CONFDIR}/rclone.conf
 PROFILE=0
 DATA_MEDIA=/data/media
@@ -61,8 +57,8 @@ NETCHK_ADDR=google.com
 CONFIGFILE=${HOME}/.config/rclone/rclone.conf
 LOGFILE=${USER_CONFDIR}/rclone.log
 LOGLEVEL=NOTICE
-CACHE=${USER_CONFDIR}/.cache
-CACHE_BACKEND=${USER_CONFDIR}/.cache-backend
+CACHE=/data/rclone/cache
+CACHE_BACKEND=/data/rclone/cache/cache-backend
 CACHEMODE=off
 READCHUNKSIZE=1M
 CACHEMAXSIZE=1G
@@ -419,79 +415,6 @@ su -M -p -c nice -n 19 ionice -c 2 -n 7 ${HOME}/rclone mount ${remote}: ${CLOUDR
 
 }
 
-local_share () {
-
-if [[ ${HTTP} = 1 ]]; then
-    if [[ ! -z ${HTTPDIR} ]] && [[ ${HTTPDIR} != -1 ]]; then
-        if $(/sbin/rclone serve http ${CLOUDROOTMOUNTPOINT}/${remote}/${HTTPDIR} --addr ${HTTP_ADDR} --no-checksum --no-modtime --read-only >> /dev/null 2>&1 &); then
-
-            echo "Notice: remote ${CLOUDROOTMOUNTPOINT}/${remote}/${HTTPDIR} served via HTTP at: http://${HTTP_ADDR}"
-
-        fi
-    elif [[ ${HTTPDIR} = -1 ]]; then
-        if $(/sbin/rclone serve http ${CLOUDROOTMOUNTPOINT} --addr ${HTTP_ADDR} --no-checksum --no-modtime --read-only >> /dev/null 2>&1 &); then
-       
-             echo "Notice: ${CLOUDROOTMOUNTPOINT} served via HTTP at: http://${HTTP_ADDR}"
-             
-        fi
-    else 
-        if $(/sbin/rclone serve http ${CLOUDROOTMOUNTPOINT}/${remote} --addr ${HTTP_ADDR} --no-checksum --no-modtime --read-only >> /dev/null 2>&1 &); then
-           
-            echo "Notice: ${CLOUDROOTMOUNTPOINT}/${remote} served via HTTP at: http://${HTTP_ADDR}"
-            
-        fi
-    fi
-fi
-
-if [[ ${FTP} = 1 ]]; then
-
-    if [[ ! -z ${FTPDIR} ]] && [[ ${FTPDIR} != -1 ]]; then
-        if $(/sbin/rclone serve ftp ${CLOUDROOTMOUNTPOINT}/${remote}/${FTPDIR} --addr ${FTP_ADDR} --no-checksum --no-modtime --read-only >> /dev/null 2>&1 &); then
-
-            echo "Notice: remote ${CLOUDROOTMOUNTPOINT}/${remote}/${FTPDIR} served via FTP at: http://${FTP_ADDR}"
-
-        fi
-    elif [[ ${FTPDIR} = -1 ]]; then
-        if $(/sbin/rclone serve ftp ${CLOUDROOTMOUNTPOINT} --addr ${FTP_ADDR} --no-checksum --no-modtime --read-only >> /dev/null 2>&1 &); then
-       
-             echo "Notice: ${CLOUDROOTMOUNTPOINT} via FTP at: http://${FTP_ADDR}"
-             
-        fi
-    else 
-        if $(/sbin/rclone serve ftp ${CLOUDROOTMOUNTPOINT}/${remote} --addr ${FTP_ADDR} --no-checksum --no-modtime --read-only >> /dev/null 2>&1 &); then
-           
-            echo "Notice: ${CLOUDROOTMOUNTPOINT}/${remote} served via FTP at: http://${FTP_ADDR}"
-            
-        fi
-    fi
-fi
-
-if [[ ${SFTP} = 1 ]] && [[ ! -z ${SFTP_USER} ]] && [[ ! -z ${SFTP_PASS} ]]; then
-
-    if [[ ! -z ${SFTPDIR} ]] && [[ ${SFTPDIR} != -1 ]]; then
-        if $(/sbin/rclone serve sftp ${CLOUDROOTMOUNTPOINT} --addr ${SFTP_ADDR} --user ${SFTP_USER} --pass ${SFTP_PASS} --no-checksum --no-modtime --read-only >> /dev/null 2>&1 &); then
-
-            echo "Notice: remote ${CLOUDROOTMOUNTPOINT}/${remote}/${SFTPDIR} served via SFTP at: http://${SFTP_ADDR}"
-
-        fi
-    elif [[ ${SFTPDIR} = -1 ]]; then
-        if $(/sbin/rclone serve sftp ${CLOUDROOTMOUNTPOINT} --addr ${SFTP_ADDR} --user ${SFTP_USER} --pass ${SFTP_PASS} --no-checksum --no-modtime --read-only >> /dev/null 2>&1 &); then
-       
-             echo "Notice: ${CLOUDROOTMOUNTPOINT} via SFTP at: http://${SFTP_ADDR}"
-             
-        fi
-    else 
-        if $(/sbin/rclone serve sftp ${CLOUDROOTMOUNTPOINT} --addr ${SFTP_ADDR} --user ${SFTP_USER} --pass ${SFTP_PASS} --no-checksum --no-modtime --read-only >> /dev/null 2>&1 &); then
-           
-            echo "Notice: ${CLOUDROOTMOUNTPOINT}/${remote} served via SFTP at: http://${SFTP_ADDR}"
-            
-        fi
-    fi
-fi
-
-}
-
-
 COUNT=0
 
 if [[ ${INTERACTIVE} = 0 ]]; then
@@ -652,13 +575,79 @@ LD_LIBRARY_PATH=${HOME} ${HOME}/rclone listremotes --config ${CONFIGFILE}|cut -f
         rclone_mount
         sd_binder
         syncd_service
-        local_share
         reset_params
 
     done
 
 echo
 
+if [[ ${HTTP} = 1 ]]; then
+    if [[ ! -z ${HTTPDIR} ]] && [[ ${HTTPDIR} != -1 ]]; then
+        if $(/sbin/rclone serve http ${CLOUDROOTMOUNTPOINT}/${remote}/${HTTPDIR} --addr ${HTTP_ADDR} --no-checksum --no-modtime --read-only >> /dev/null 2>&1 &); then
+
+            echo "Notice: remote ${CLOUDROOTMOUNTPOINT}/${remote}/${HTTPDIR} served via HTTP at: http://${HTTP_ADDR}"
+
+        fi
+    elif [[ ${HTTPDIR} = -1 ]]; then
+        if $(/sbin/rclone serve http ${CLOUDROOTMOUNTPOINT} --addr ${HTTP_ADDR} --no-checksum --no-modtime --read-only >> /dev/null 2>&1 &); then
+       
+             echo "Notice: ${CLOUDROOTMOUNTPOINT} served via HTTP at: http://${HTTP_ADDR}"
+             
+        fi
+    else 
+        if $(/sbin/rclone serve http ${CLOUDROOTMOUNTPOINT}/${remote} --addr ${HTTP_ADDR} --no-checksum --no-modtime --read-only >> /dev/null 2>&1 &); then
+           
+            echo "Notice: ${CLOUDROOTMOUNTPOINT}/${remote} served via HTTP at: http://${HTTP_ADDR}"
+            
+        fi
+    fi
+fi
+
+if [[ ${FTP} = 1 ]]; then
+
+    if [[ ! -z ${FTPDIR} ]] && [[ ${FTPDIR} != -1 ]]; then
+        if $(/sbin/rclone serve ftp ${CLOUDROOTMOUNTPOINT}/${remote}/${FTPDIR} --addr ${FTP_ADDR} --no-checksum --no-modtime --read-only >> /dev/null 2>&1 &); then
+
+            echo "Notice: remote ${CLOUDROOTMOUNTPOINT}/${remote}/${FTPDIR} served via FTP at: http://${FTP_ADDR}"
+
+        fi
+    elif [[ ${FTPDIR} = -1 ]]; then
+        if $(/sbin/rclone serve ftp ${CLOUDROOTMOUNTPOINT} --addr ${FTP_ADDR} --no-checksum --no-modtime --read-only >> /dev/null 2>&1 &); then
+       
+             echo "Notice: ${CLOUDROOTMOUNTPOINT} via FTP at: http://${FTP_ADDR}"
+             
+        fi
+    else 
+        if $(/sbin/rclone serve ftp ${CLOUDROOTMOUNTPOINT}/${remote} --addr ${FTP_ADDR} --no-checksum --no-modtime --read-only >> /dev/null 2>&1 &); then
+           
+            echo "Notice: ${CLOUDROOTMOUNTPOINT}/${remote} served via FTP at: http://${FTP_ADDR}"
+            
+        fi
+    fi
+fi
+
+if [[ ${SFTP} = 1 ]] && [[ ! -z ${SFTP_USER} ]] && [[ ! -z ${SFTP_PASS} ]]; then
+
+    if [[ ! -z ${SFTPDIR} ]] && [[ ${SFTPDIR} != -1 ]]; then
+        if $(/sbin/rclone serve sftp ${CLOUDROOTMOUNTPOINT} --addr ${SFTP_ADDR} --user ${SFTP_USER} --pass ${SFTP_PASS} --no-checksum --no-modtime --read-only >> /dev/null 2>&1 &); then
+
+            echo "Notice: remote ${CLOUDROOTMOUNTPOINT}/${remote}/${SFTPDIR} served via SFTP at: http://${SFTP_ADDR}"
+
+        fi
+    elif [[ ${SFTPDIR} = -1 ]]; then
+        if $(/sbin/rclone serve sftp ${CLOUDROOTMOUNTPOINT} --addr ${SFTP_ADDR} --user ${SFTP_USER} --pass ${SFTP_PASS} --no-checksum --no-modtime --read-only >> /dev/null 2>&1 &); then
+       
+             echo "Notice: ${CLOUDROOTMOUNTPOINT} via SFTP at: http://${SFTP_ADDR}"
+             
+        fi
+    else 
+        if $(/sbin/rclone serve sftp ${CLOUDROOTMOUNTPOINT} --addr ${SFTP_ADDR} --user ${SFTP_USER} --pass ${SFTP_PASS} --no-checksum --no-modtime --read-only >> /dev/null 2>&1 &); then
+           
+            echo "Notice: ${CLOUDROOTMOUNTPOINT}/${remote} served via SFTP at: http://${SFTP_ADDR}"
+            
+        fi
+    fi
+fi
 
 echo
 echo "...done"
