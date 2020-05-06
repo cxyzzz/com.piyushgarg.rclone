@@ -1,6 +1,6 @@
 #!/system/bin/env bash
 
-MODDIR=${0%/*}
+MODDIR=/data/adb/modules
 UPDDIR=/data/adb/modules_update
 IMGDIR=/sbin/.core/img
 id=com.piyushgarg.rclone
@@ -39,7 +39,7 @@ elif [ -e ${IMGDIR}/${id}/rclone ]; then
 
 else
 
-    HOME=${MODDIR}
+    HOME=${MODDIR}/${id}
 
 fi
 
