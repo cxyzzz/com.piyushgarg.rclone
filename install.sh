@@ -191,7 +191,7 @@ set_permissions() {
   ui_print "+ Attempting to mount your [Remotes]:"
   ui_print "+ please wait..."
   ui_print ""
-  
+  . /system/etc/bash/bashrc
     if [[ -e /sdcard/.rclone/rclone.conf ]] || [[-e ${XDG_CONFIG_HOME}/rclone/rclone.conf ]]; then
       
         export INTERACTIVE=1
