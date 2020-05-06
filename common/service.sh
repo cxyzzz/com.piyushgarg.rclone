@@ -4,6 +4,7 @@
 # and module is placed.
 # This will make sure your module will work
 # if Magisk changes it's mount point in the future
+. /system/etc/bash/bashrc
 
 PATH=/system/bin:/sbin:/sbin/.core/busybox:/system/xbin
 
