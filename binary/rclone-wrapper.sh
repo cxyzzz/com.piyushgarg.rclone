@@ -40,7 +40,7 @@ elif [ -e ${IMGDIR}/${id}/rclone ]; then
 
 else
 
-    HOME=${MODDIR}/${id}
+    HOME=${MODDIR}
 
 fi
 
@@ -194,38 +194,27 @@ remount () {
 
 }
 
-if [[ ${1} = disable ]]; then
-
-    disable
-
-elif [[ ${1} = remount ]]; then
-
-    remount
-
-elif [[ ${1} = unmount ]]; then
-
-    sd_unbind
-    unmount
-    
-    
-elif [[ ${1} = config ]]; then
-
-    config
-     
-elif [[ ${1} = help ]]; then
-
-    help
-    
-elif [[ ${1} = --help ]]; then
-
-    help
-
-elif [[ -z ${1} ]]; then
-
-    help
-
-else
-
-    ${HOME}/rclone $*
-    
-fi
+case ${1} in
+    disable) 
+        disable
+        ;;   
+    mount)
+        ${HOME}/service.sh
+        ;;    
+    remount)
+        remount
+        ;;    
+    unmount)
+        sd_unbind
+        unmount
+        ;;   
+    config)
+        config
+        ;;
+    help | --help | -h)
+        help
+        ;;
+    *)
+        ${HOME}/rclone $*
+        ;;
+esac
