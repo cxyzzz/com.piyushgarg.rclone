@@ -129,9 +129,12 @@ unmount () {
     
     sleep 1
     
-    umount -lf ${CLOUDROOTMOUNTPOINT}/* >> /dev/null 2>&1
-    
-    umount -lf ${CLOUDROOTMOUNTPOINT} >> /dev/null 2>&1
+    if [[ -d "${CLOUDROOTMOUNTPOINT}" ]]; then
+        for i in $(ls ${CLOUDROOTMOUNTPOINT}); do
+            umount -lf ${CLOUDROOTMOUNTPOINT}/${i} >> /dev/null 2>&1
+        done
+        umount -lf ${CLOUDROOTMOUNTPOINT} >> /dev/null 2>&1
+    fi
 
     $HOME/rclone purge ${CLOUDROOTMOUNTPOINT} >> /dev/null 2>&1
 
