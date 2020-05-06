@@ -1,6 +1,7 @@
 #!/system/bin/env bash
 
-MODDIR=/data/adb/modules
+MODDIR="$(dirname -- "$(readlink -f -- "$0")")"
+#MODDIR=/data/adb/modules
 UPDDIR=/data/adb/modules_update
 IMGDIR=/sbin/.core/img
 id=com.piyushgarg.rclone
