@@ -112,7 +112,7 @@ custom_params () {
 
     else
 
-        PARAMS="DISABLE LOGFILE LOGLEVEL CACHEMODE CHUNKSIZE CHUNKTOTAL CACHEWORKERS CACHEINFOAGE DIRCACHETIME ATTRTIMEOUT BUFFERSIZE READAHEAD M_UID M_GID DIRPERMS FILEPERMS READONLY BINDSD SDBINDPOINT ADD_PARAMS REPLACE_PARAMS HTTP FTP HTTPDIR FTPDIR HTTP_ADDR FTP_ADDR SFTP SFTPDIR SFTP_ADDR SFTP_USER SFTP_PASS PROFILE ISOLATE SDSYNCDIRS SYNC_WIFI SYNC_BATTLVL SYNC_CHARGE"
+        PARAMS="DISABLE LOGFILE LOGLEVEL CACHEMODE CHUNKSIZE CHUNKTOTAL CACHEWORKERS CACHEINFOAGE DIRCACHETIME ATTRTIMEOUT BUFFERSIZE READAHEAD M_UID M_GID DIRPERMS FILEPERMS READONLY BINDSD SDBINDPOINT SUBPATH ADD_PARAMS REPLACE_PARAMS HTTP FTP HTTPDIR FTPDIR HTTP_ADDR FTP_ADDR SFTP SFTPDIR SFTP_ADDR SFTP_USER SFTP_PASS PROFILE ISOLATE SDSYNCDIRS SYNC_WIFI SYNC_BATTLVL SYNC_CHARGE"
     fi
 
     BAD_SYNTAX="(^\s*#|^\s*$|^\s*[a-z_][^[:space:]]*=[^;&\(\`]*$)"
@@ -125,6 +125,7 @@ custom_params () {
 
             echo "loading .${remote}.param"
 
+            # FIX: Unnecessary and very inefficient double loop
             for PARAM in ${PARAMS[@]}; do
 
                 while read -r VAR; do
@@ -135,6 +136,8 @@ custom_params () {
 
                         VALUE=\"${VALUE}\"
 
+                        # Unnecessary echo in a subshell execution below? Why not just: 
+                        # eval "${PARAM}""=""${VALUE}"
                         eval $(echo "${PARAM}""=""${VALUE}")
 
                     fi
@@ -338,6 +341,7 @@ reset_params () {
     unset SYNCDIR
     unset SDSYNCDIRS
     unset PIDFILE
+    unset SUBPATH
     LOGFILE=${USER_CONFDIR}/rclone.log
     LOGLEVEL=NOTICE
     CACHEMODE=off
@@ -411,7 +415,7 @@ rclone_mount () {
 
     mkdir -p ${CLOUDROOTMOUNTPOINT}/${remote}
 
-su -M -p -c nice -n 19 ionice -c 2 -n 7 ${HOME}/rclone mount ${remote}: ${CLOUDROOTMOUNTPOINT}/${remote} --config ${CONFIGFILE} ${RCLONE_PARAMS} --daemon >> /dev/null 2>&1 &
+su -M -p -c nice -n 19 ionice -c 2 -n 7 ${HOME}/rclone mount ${remote}:${SUBPATH} ${CLOUDROOTMOUNTPOINT}/${remote} --config ${CONFIGFILE} ${RCLONE_PARAMS} --daemon >> /dev/null 2>&1 &
 
 }
 
