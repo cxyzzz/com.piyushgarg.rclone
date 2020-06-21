@@ -4,8 +4,7 @@
 # and module is placed.
 # This will make sure your module will work
 # if Magisk changes it's mount point in the future
-. /system/etc/bash/bashrc
-
+XDG_CONFIG_HOME=/sdcard/ADM/.config
 PATH=/system/bin:/sbin:/sbin/.core/busybox:/system/xbin
 
 MODDIR=${0%/*}
@@ -525,7 +524,7 @@ fi
 
 if [[ -e ${USER_CONF} ]]; then
 
-    cp ${USER_CONF} ${CONFIGFILE}
+    /system/bin/cp ${USER_CONF} ${CONFIGFILE}
     chmod 0600 ${CONFIGFILE}
 
 fi
