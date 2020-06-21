@@ -49,9 +49,8 @@ fi
 
 echo $HOME
 
-ln -sf ${HOME}/rclone /sbin/rclone
 ln -sf ${HOME}/fusermount /sbin/fusermount
-ln -sf ${HOME}/rclone-wrapper.sh /sbin/rclonew
+ln -sf ${HOME}/rclone-wrapper.sh /sbin/rclone
 
 #MODULE VARS
 SYSBIN=/system/bin
