@@ -197,12 +197,12 @@ Specification of global rclone parameters can be created in
 
         CACHE_BACKEND=${USER_CONFDIR}/.cache-backend
 
-* Excluded Parameters
+- Excluded Parameters
 
         SDBINDPOINT=
         SDSYNCDIRS=
 
-* Custom globals params example #1
+- Custom globals params example #1
 
   _The following configuration will enable minimal caching for all remotes, bind to `/sdcard/Cloud/*`, disable HTTP/FTP & add the `--fast-list`/`--allow-non-empty` flags to their mounting command(s)._
 
@@ -319,8 +319,10 @@ Neither the author nor developer's will be held responsible for any damage/data 
 ## Changelog
 
 ## v1.11
-* Add arm/arm64 1.52 bins downloaded from https://beta.rclone.org/v1.52.0/testbuilds/rclone-android-16-arm.gz
-* Fixed service.sh paths
+
+- Add arm/arm64 1.52 bins downloaded from <https://beta.rclone.org/v1.52.0/testbuilds/rclone-android-16-arm.gz>
+- Fixed service.sh paths
+- Replace rclone arm64 with gclone. <https://github.com/donwa/gclone>
 
 ## v1.10
 

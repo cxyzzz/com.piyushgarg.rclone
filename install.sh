@@ -128,7 +128,7 @@ print_modname() {
   ui_print "*        Magisk Module        *"
   ui_print "*       by: piyushgarg        *"
   ui_print "*******************************"
-  ui_print "*rclone: (v1.48.0) mod: (v1.8)*"
+  ui_print "*gclone: (v1.51.0) mod: (v1.8)*"
   ui_print "*******************************"
 }
 
@@ -187,8 +187,7 @@ set_permissions() {
   set_perm $MODPATH/syncd.sh 0 0 0755
   set_perm $MODPATH/inotifywait 0 0 0555
 
-  ln -sf $MODPATH/rclone /sbin/rclone
-  ln -sf $MODPATH/rclone-wrapper.sh /sbin/rclonew
+  ln -sf $MODPATH/rclone-wrapper.sh /sbin/rclone
   ln -sf $MODPATH/fusermount /sbin/fusermount
 
   ui_print "✓ Now no need to reboot..."
