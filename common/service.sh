@@ -55,11 +55,7 @@ ln -sf ${HOME}/rclone-wrapper.sh /sbin/rclone
 #MODULE VARS
 SYSBIN=/system/bin
 CLOUDROOTMOUNTPOINT=/mnt/cloud
-if [ ${XDG_CONFIG_HOME} ]; then
-    USER_CONFDIR=${XDG_CONFIG_HOME}/rclone
-else
-    USER_CONFDIR=/sdcard/.rclone
-fi
+USER_CONFDIR=${XDG_CONFIG_HOME:=/sdcard}/rclone
 USER_CONF=${USER_CONFDIR}/rclone.conf
 PROFILE=0
 DATA_MEDIA=/data/media
