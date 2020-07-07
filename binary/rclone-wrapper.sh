@@ -5,11 +5,7 @@ UPDDIR=/data/adb/modules_update
 IMGDIR=/sbin/.core/img
 id=com.piyushgarg.rclone
 
-if [ -n "$XDG_CONFIG_HOME" ]; then
-    USER_CONFDIR=$XDG_CONFIG_HOME/.rclone
-else
-    USER_CONFDIR=/sdcard/.rclone
-fi
+USER_CONFDIR=${XDG_CONFIG_HOME:=/sdcard}/rclone
 
 USER_CONF=${USER_CONFDIR}/rclone.conf
 CONFIGFILE=${HOME}/.config/rclone/rclone.conf
